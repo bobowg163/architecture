@@ -11,12 +11,12 @@ import androidx.room.RoomDatabase
  **/
 
 /**
-  *
-  * @description 包含任务表的数据库。
-  * @author bobo
-  * @time 2024/11/17 下午1:10
-  */
+ *
+ * @description 包含任务表的数据库。
+ * @author bobo
+ * @time 2024/11/17 下午1:10
+ */
 @Database(entities = [LocalTask::class], version = 1, exportSchema = false)
-abstract class ToDoDatabase: RoomDatabase() {
+abstract class ToDoDatabase : RoomDatabase() {
     abstract fun taskDao(): TaskDao
 }
