@@ -62,4 +62,8 @@ class TodoNavigationActions(private val navController: NavHostController) {
             restoreState = navigatesFromDrawer
         }
     }
+
+    fun navigateToStatistics(){
+
+    }
 }
