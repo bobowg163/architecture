@@ -112,31 +112,45 @@ class DefaultTaskRepository @Inject constructor(
     }
 
     override suspend fun updateTask(taskId: String, title: String, description: String) {
-        val task = getTask(taskId)?.copy(title = title,description=description)?:throw Exception("Task (id $taskId) not found")
+        val task = getTask(taskId)?.copy(title = title, description = description)
+            ?: throw Exception("Task (id $taskId) not found")
         localDataSource.upsert(task.toLocal())
         saveTasksToNetwork()
     }
 
     override suspend fun completeTask(taskId: String) {
-        TODO("Not yet implemented")
+        localDataSource.updateCompleted(taskId = taskId, completed = true)
+        saveTasksToNetwork()
     }
 
     override suspend fun activateTask(taskId: String) {
-        TODO("Not yet implemented")
+        localDataSource.updateCompleted(taskId = taskId, completed = false)
+        saveTasksToNetwork()
     }
 
     override suspend fun clearCompletedTasks() {
-        TODO("Not yet implemented")
+        localDataSource.deleteCompleted()
+        saveTasksToNetwork()
     }
 
     override suspend fun deleteAllTasks() {
-        TODO("Not yet implemented")
+       localDataSource.deleteAll()
+        saveTasksToNetwork()
     }
 
     override suspend fun deleteTask(taskId: String) {
-        TODO("Not yet implemented")
+       localDataSource.deleteById(taskId)
+        saveTasksToNetwork()
     }
 
+    /**
+      *
+      * @描述 将本地数据源的任务发送到网络数据源
+     * 启动作业后立即执行。实际应用可能希望在此暂停，直到操作完成或（最好）使用 WorkManager 来安排此工作。
+     * 这两种方法都应提供一种机制，将故障信息反馈给用户，以便他们知道他们的数据没有备份。
+      * @作者 bobo
+      * @日期及时间 2024/11/23 09:45
+      */
     private fun saveTasksToNetwork() {
         scope.launch {
             try {
