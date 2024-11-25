@@ -53,8 +53,8 @@ class TodoNavigationActions(private val navController: NavHostController) {
             TASKS_SCREEN.let {
                 if (userMessage != 0) "$it?$USER_MESSAGE_ARG=$userMessage" else it
             }
-        ){
-            popUpTo(navController.graph.findStartDestination().id){
+        ) {
+            popUpTo(navController.graph.findStartDestination().id) {
                 inclusive = !navigatesFromDrawer
                 saveState = navigatesFromDrawer
             }
@@ -63,7 +63,26 @@ class TodoNavigationActions(private val navController: NavHostController) {
         }
     }
 
-    fun navigateToStatistics(){
+    fun navigateToStatistics() {
+        navController.navigate(TodoDestinations.STATISTICS_ROUTE) {
+            popUpTo(navController.graph.findStartDestination().id) {
+                saveState = true
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
 
+    fun navigateToTaskDetail(taskId: String) {
+        navController.navigate("$TASK_DETAIL_SCREEN/$taskId")
+
+    }
+
+    fun navigateToAddEditTask(title: Int, taskId: String?) {
+        navController.navigate(
+            "$ADD_EDIT_TASK_SCREEN/$title".let {
+                if (taskId != null) "$it?$TASK_ID_ARG=$taskId" else it
+            }
+        )
     }
 }
