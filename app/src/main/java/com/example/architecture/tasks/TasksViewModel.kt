@@ -2,16 +2,24 @@ package com.example.architecture.tasks
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.architecture.ADD_EDIT_RESULT_OK
+import com.example.architecture.DELETE_RESULT_OK
+import com.example.architecture.EDIT_RESULT_OK
 import com.example.architecture.R
 import com.example.architecture.data.Task
 import com.example.architecture.data.TaskRepository
 import com.example.architecture.util.Async
+import com.example.architecture.util.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -20,6 +28,14 @@ import javax.inject.Inject
  * @作者 bobo
  * @日期及日间 2024/11/26 18:33
  **/
+
+data class TasksUiState(
+    val items: List<Task> = emptyList(),
+    val isLoading: Boolean = false,
+    val filteringUiInfo: FilteringUiInfo = FilteringUiInfo(),
+    val userMessage: Int? = null
+)
+
 
 @HiltViewModel
 class TasksViewModel @Inject constructor(
@@ -36,8 +52,78 @@ class TasksViewModel @Inject constructor(
             filterTasks(tasks, type)
         }.map { Async.Success(it) }
             .catch<Async<List<Task>>> { emit(Async.Error(R.string.loading_tasks_error)) }
+    val uiState: StateFlow<TasksUiState> = combine(
+        _filterUiInfo, _isLoading, _userMessage, _filteredTasksAsync
+    ) { filterUiInfo, isLoading, userMessage, tasksAsync ->
+        when (tasksAsync) {
+            Async.Loading -> {
+                TasksUiState(isLoading = true)
+            }
 
+            is Async.Error -> {
+                TasksUiState(userMessage = tasksAsync.errorMessage)
+            }
 
+            is Async.Success -> {
+                TasksUiState(
+                    items = tasksAsync.data,
+                    filteringUiInfo = filterUiInfo,
+                    isLoading = isLoading,
+                    userMessage = userMessage
+                )
+            }
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = WhileUiSubscribed,
+        initialValue = TasksUiState(isLoading = true)
+    )
+
+    fun setFiltering(requestType: TasksFilterType) {
+        savedStateHandle[TASKS_FILTER_SAVED_STATE_KEY] = requestType
+    }
+
+    fun clearCompletedTasks() {
+        viewModelScope.launch {
+            taskRepository.clearCompletedTasks()
+            showSnackbarMessage(R.string.completed_tasks_cleared)
+            refresh()
+        }
+    }
+
+    fun showEditResultMessage(result:Int){
+        when(result){
+            EDIT_RESULT_OK -> showSnackbarMessage(R.string.successfully_saved_task_message)
+            ADD_EDIT_RESULT_OK -> showSnackbarMessage(R.string.successfully_added_task_message)
+            DELETE_RESULT_OK -> showSnackbarMessage(R.string.successfully_deleted_task_message)
+        }
+    }
+
+    fun snackbarMessageShown(){
+        _userMessage.value = null
+    }
+
+    fun completeTask(task: Task,completed:Boolean) = viewModelScope.launch {
+        if (completed){
+            taskRepository.completeTask(task.id)
+            showSnackbarMessage(R.string.task_marked_complete)
+        }else {
+            taskRepository.activateTask(task.id )
+            showSnackbarMessage(R.string.task_marked_active)
+        }
+    }
+
+    fun refresh(){
+        _isLoading.value = true
+        viewModelScope.launch {
+            taskRepository.refresh()
+            _isLoading.value = false
+        }
+    }
+
+    private fun showSnackbarMessage(message: Int) {
+        _userMessage.value = message
+    }
 
     private fun filterTasks(tasks: List<Task>, filterType: TasksFilterType): List<Task> {
         val tasksToShow = ArrayList<Task>()
