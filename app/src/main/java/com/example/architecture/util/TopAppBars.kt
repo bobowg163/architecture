@@ -30,6 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.architecture.R
+import com.example.architecture.ui.theme.ArchitectureTheme
 
 /**
  * @项目 architecture
@@ -203,7 +204,7 @@ private fun TasksTopAppBarPreview() {
 @Preview
 @Composable
 private fun StatisticsTopAppBarPreview() {
-    MaterialTheme {
+    ArchitectureTheme {
         Surface {
             TaskDetailTopAppBar({}, {})
         }
@@ -213,7 +214,7 @@ private fun StatisticsTopAppBarPreview() {
 @Preview
 @Composable
 private fun AddEditTaskTopAppBarPreview() {
-    MaterialTheme {
+    ArchitectureTheme {
         Surface {
             AddEditTaskTopAppBar(R.string.add_task) { }
         }
