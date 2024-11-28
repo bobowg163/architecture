@@ -18,6 +18,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.architecture.TodoDestinationsArgs.USER_MESSAGE_ARG
+import com.example.architecture.statistics.StatisticsScreen
 import com.example.architecture.tasks.TasksScreen
 import com.example.architecture.util.AppModalDrawer
 import kotlinx.coroutines.CoroutineScope
@@ -70,6 +71,16 @@ fun TodoNavGraph(
                         openDrawer = { coroutineScope.launch { drawerState.open() } }
                     )
                 }
+            }
+        }
+
+        composable(TodoDestinations.STATISTICS_ROUTE) {
+            AppModalDrawer(
+                drawerState = drawerState,
+                currentRoute = currentRoute,
+                navigationActions = navActions
+            ) {
+                StatisticsScreen(openDrawer = { coroutineScope.launch { drawerState.open() } })
             }
         }
     }

@@ -186,10 +186,10 @@ private fun TaskItem(
         Text(
             text = task.titleForList,
             style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(start = dimensionResource(id=R.dimen.horizontal_margin)),
-            textDecoration = if (task.isCompleted){
+            modifier = Modifier.padding(start = dimensionResource(id = R.dimen.horizontal_margin)),
+            textDecoration = if (task.isCompleted) {
                 TextDecoration.LineThrough
-            }else {
+            } else {
                 null
             }
         )
@@ -245,3 +245,74 @@ private fun TasksContentPreview() {
         }
     }
 }
+
+@Preview
+@Composable
+private fun TasksContentEmptyPreview() {
+    ArchitectureTheme {
+        Surface {
+            TasksContent(
+                loading = false,
+                tasks = emptyList(),
+                currentFilteringLabel = R.string.label_all,
+                noTasksLabel = R.string.no_tasks_all,
+                noTasksIconRes = R.drawable.logo_no_fill,
+                onRefresh = {},
+                onTaskClick = {},
+                onTaskCheckedChange = { _, _ -> }
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun TasksEmptyContentPreview() {
+    ArchitectureTheme {
+        Surface {
+            TasksEmptyContent(
+                noTasksLabel = R.string.no_tasks_all,
+                noTasksIconRes = R.drawable.logo_no_fill
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun TaskItemPreview() {
+    ArchitectureTheme {
+        Surface {
+            TaskItem(
+                task = Task(
+                    title = "Title",
+                    description = "Description",
+                    id = "ID"
+                ),
+                onTaskClick = { },
+                onTaskCheckedChange = {}
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun TaskItemCompletedPreview() {
+    ArchitectureTheme {
+        Surface {
+            TaskItem(
+                task = Task(
+                    title = "Title",
+                    description = "Description",
+                    isCompleted = true,
+                    id = "ID"
+                ),
+                onTaskClick = { },
+                onTaskCheckedChange = { }
+            )
+        }
+    }
+}
+
+

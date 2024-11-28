@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">architecture</string>
-    <string name="add_task">New Task</string>
-    <string name="edit_task">Edit Task</string>
-    <string name="task_details">Task Details</string>
+    <string name="app_name">体系结构</string>
+    <string name="add_task">新任务</string>
+    <string name="edit_task">编辑任务</string>
+    <string name="task_details">任务详细信息</string>
     <string name="task_marked_complete">Task marked complete</string>
     <string name="task_marked_active">Task marked active</string>
     <string name="loading_tasks_error">Error while loading tasks</string>
@@ -21,9 +21,9 @@
     <string name="cd_save_task">Save task</string>
     <string name="empty_task_message">Tasks cannot be empty</string>
     <string name="successfully_saved_task_message">Task saved</string>
-    <string name="list_title">Task List</string>
-    <string name="statistics_title">Statistics</string>
-    <string name="statistics_no_tasks">You have no tasks.</string>
+    <string name="list_title">任务列表</string>
+    <string name="statistics_title">统计数据</string>
+    <string name="statistics_no_tasks">您没有任务。</string>
     <string name="statistics_active_tasks">Active tasks: %.1f%%</string>
     <string name="statistics_completed_tasks">Completed tasks: %.1f%%</string>
     <string name="statistics_error">Error loading statistics.</string>
