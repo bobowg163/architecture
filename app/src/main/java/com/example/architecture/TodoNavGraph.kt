@@ -17,7 +17,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.architecture.TodoDestinationsArgs.TASK_ID_ARG
+import com.example.architecture.TodoDestinationsArgs.TITLE_ARG
 import com.example.architecture.TodoDestinationsArgs.USER_MESSAGE_ARG
+import com.example.architecture.addedittask.AddEditTaskScreen
 import com.example.architecture.statistics.StatisticsScreen
 import com.example.architecture.tasks.TasksScreen
 import com.example.architecture.util.AppModalDrawer
@@ -82,6 +85,23 @@ fun TodoNavGraph(
             ) {
                 StatisticsScreen(openDrawer = { coroutineScope.launch { drawerState.open() } })
             }
+        }
+
+        composable(
+            TodoDestinations.ADD_EDIT_TASK_ROUTE,
+            arguments = listOf(
+                navArgument(TITLE_ARG) { type = NavType.IntType },
+                navArgument(TASK_ID_ARG) { type = NavType.StringType;nullable = true }
+            )
+        ) { entry ->
+            val taskId = entry.arguments?.getString(TASK_ID_ARG)
+            AddEditTaskScreen(
+                topBarTitle = entry.arguments?.getInt(TITLE_ARG)!!,
+                onTaskUpdate = {
+                    navActions.navigateToTasks(if (taskId == null) ADD_EDIT_RESULT_OK else EDIT_RESULT_OK)
+                },
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }
