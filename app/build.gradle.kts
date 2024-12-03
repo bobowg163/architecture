@@ -69,6 +69,7 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     implementation(libs.androidx.test.espresso.idling.resources)
+    androidTestImplementation(libs.hilt.android.testing)
     ksp(libs.room.compiler)
     // Hilt
     implementation(libs.hilt.android.core)
@@ -89,5 +90,7 @@ dependencies {
     androidTestImplementation(libs.androidx.test.espresso.intents)
     androidTestImplementation(libs.androidx.test.espresso.idling.resources)
     androidTestImplementation(libs.androidx.test.espresso.idling.concurrent)
+    testImplementation(libs.hilt.android.testing)
+    kaptTest(libs.hilt.compiler)
 
 }
