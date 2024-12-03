@@ -22,6 +22,7 @@ import com.example.architecture.TodoDestinationsArgs.TITLE_ARG
 import com.example.architecture.TodoDestinationsArgs.USER_MESSAGE_ARG
 import com.example.architecture.addedittask.AddEditTaskScreen
 import com.example.architecture.statistics.StatisticsScreen
+import com.example.architecture.taskdetail.TaskDetailScreen
 import com.example.architecture.tasks.TasksScreen
 import com.example.architecture.util.AppModalDrawer
 import kotlinx.coroutines.CoroutineScope
@@ -101,6 +102,16 @@ fun TodoNavGraph(
                     navActions.navigateToTasks(if (taskId == null) ADD_EDIT_RESULT_OK else EDIT_RESULT_OK)
                 },
                 onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(TodoDestinations.TASK_DETAIL_ROUTE) {
+            TaskDetailScreen(
+                onEditTask = { taskId ->
+                    navActions.navigateToAddEditTask(R.string.edit_task, taskId)
+                },
+                onBack = { navController.popBackStack() },
+                onDeleteTask = { navActions.navigateToTasks(DELETE_RESULT_OK) }
             )
         }
     }
